@@ -1,0 +1,72 @@
+generator client {
+  provider     = "prisma-client"
+  output       = "../generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id         String     @id @default(cuid())
+  name       String?
+  email      String     @unique
+  password   String?    // Optional: null for OAuth users, required for local auth
+  image      String?
+  groups     Group[]
+  categories Category[]
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+}
+
+model Group {
+  id        String   @id @default(cuid())
+  name      String
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  notes     Note[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Note {
+  id         String       @id @default(cuid())
+  title      String
+  content    String
+  status     NoteStatus   @default(ACTIVE)
+  groupId    String
+  group      Group        @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  categories NoteCategory[]
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+}
+
+model Category {
+  id        String         @id @default(cuid())
+  name      String
+  color     String?        // Hex color for UI
+  userId    String
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  notes     NoteCategory[]
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  
+  @@unique([userId, name])
+}
+
+model NoteCategory {
+  noteId     String
+  categoryId String
+  note       Note     @relation(fields: [noteId], references: [id], onDelete: Cascade)
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+
+  @@id([noteId, categoryId])
+}
+
+enum NoteStatus {
+  ACTIVE
+  ARCHIVED
+  TRASHED
+}
