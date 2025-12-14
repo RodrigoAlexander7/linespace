@@ -2,7 +2,6 @@
 
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { api } from '@/lib/apis';
 
 const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:3000';
 
@@ -75,29 +74,36 @@ export async function loginWithCredentials(
     const data = await response.json();
     const { accessToken } = data;
 
-    // Validate token with backend
+    // Validate token with backend (usar fetch server-side, no la instancia cliente)
     try {
-      await api.get('/users/me', {
+      const validateResponse = await fetch(`${BACKEND_URL}/users/me`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       });
+      if (!validateResponse.ok) {
+        console.error('Token validation failed:', validateResponse.status);
+        return {
+          success: false,
+          error: 'Token validation failed',
+        };
+      }
     } catch (error) {
-      console.error('Token validation failed:', error);
+      console.error('Token validation error:', error);
       return {
         success: false,
         error: 'Token validation failed',
       };
     }
 
-    // Set httpOnly cookie
+    // Set httpOnly cookie con sameSite='none' para cross-site
     const cookiesStore = await cookies();
     cookiesStore.set({
       name: 'access_token',
       value: accessToken,
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
       maxAge: 60 * 60 * 24 * 7, // 1 week
       path: '/',
     });
@@ -143,14 +149,14 @@ export async function registerWithCredentials(
     const responseData = await response.json();
     const { accessToken } = responseData;
 
-    // Set httpOnly cookie
+    // Set httpOnly cookie con sameSite='none' para cross-site
     const cookiesStore = await cookies();
     cookiesStore.set({
       name: 'access_token',
       value: accessToken,
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
       maxAge: 60 * 60 * 24 * 7, // 1 week
       path: '/',
     });
