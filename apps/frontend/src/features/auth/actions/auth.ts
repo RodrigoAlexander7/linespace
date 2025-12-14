@@ -2,6 +2,7 @@
 
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
+import axios from 'axios';
 
 const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:3000';
 
@@ -55,41 +56,18 @@ export async function loginWithCredentials(
 ): Promise<AuthResponse> {
   try {
     // Call backend login endpoint
-    const response = await fetch(`${BACKEND_URL}/auth/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(credentials),
-    });
+    const response = await axios.post(`${BACKEND_URL}/auth/login`, credentials);
+    const { accessToken } = response.data;
 
-    if (!response.ok) {
-      const error = await response.json();
-      return {
-        success: false,
-        error: error.message || 'Invalid credentials',
-      };
-    }
-
-    const data = await response.json();
-    const { accessToken } = data;
-
-    // Validate token with backend (usar fetch server-side, no la instancia cliente)
+    // Validate token with backend
     try {
-      const validateResponse = await fetch(`${BACKEND_URL}/users/me`, {
+      await axios.get(`${BACKEND_URL}/users/me`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      if (!validateResponse.ok) {
-        console.error('Token validation failed:', validateResponse.status);
-        return {
-          success: false,
-          error: 'Token validation failed',
-        };
-      }
     } catch (error) {
-      console.error('Token validation error:', error);
+      console.error('Token validation failed:', error);
       return {
         success: false,
         error: 'Token validation failed',
@@ -130,24 +108,8 @@ export async function registerWithCredentials(
 ): Promise<AuthResponse> {
   try {
     // Call backend register endpoint
-    const response = await fetch(`${BACKEND_URL}/auth/register`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      return {
-        success: false,
-        error: error.message || 'Registration failed',
-      };
-    }
-
-    const responseData = await response.json();
-    const { accessToken } = responseData;
+    const response = await axios.post(`${BACKEND_URL}/auth/register`, data);
+    const { accessToken } = response.data;
 
     // Set httpOnly cookie con sameSite='none' para cross-site
     const cookiesStore = await cookies();
