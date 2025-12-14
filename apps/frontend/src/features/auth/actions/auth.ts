@@ -103,7 +103,7 @@ export async function loginWithCredentials(
       value: accessToken,
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'none',
       maxAge: 60 * 60 * 24 * 7, // 1 week
       path: '/',
     });
@@ -156,7 +156,7 @@ export async function registerWithCredentials(
       value: accessToken,
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'none',
       maxAge: 60 * 60 * 24 * 7, // 1 week
       path: '/',
     });
