@@ -87,7 +87,7 @@ export function NoteForm({ note, defaultGroupId, onSuccess, onCancel }: NoteForm
           id="title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-gray-900"
           required
           maxLength={200}
           disabled={loading}
@@ -103,7 +103,7 @@ export function NoteForm({ note, defaultGroupId, onSuccess, onCancel }: NoteForm
           value={content}
           onChange={(e) => setContent(e.target.value)}
           rows={6}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-gray-900"
           required
           disabled={loading}
         />

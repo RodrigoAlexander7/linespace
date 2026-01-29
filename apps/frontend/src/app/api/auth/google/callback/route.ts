@@ -14,10 +14,8 @@ export async function GET(req: NextRequest) {
 
   // Validate token with backend
   try {
-    await api.get('/users/me', {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+    await fetch(process.env.BACKEND_URL + '/auth/google/callback?token=' + token, {
+      method: 'GET',
     });
   } catch (error) {
     console.error('Token validation failed:', error);

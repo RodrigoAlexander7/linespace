@@ -2,7 +2,7 @@ import { NextResponse, NextRequest } from 'next/server';
 
 import { composedMiddleware } from '@/middleware/main';
 
-export function middleware(req: NextRequest) {
+export function proxy(req: NextRequest) {
   const result = composedMiddleware(req);
   return result ?? NextResponse.next();
 }

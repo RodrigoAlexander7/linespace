@@ -20,13 +20,18 @@ export default function LoginForm() {
 
     try {
       const result = await loginWithCredentials(formData);
+      
+      console.log('Login result:', result);
 
       if (result.success) {
+        console.log('Login successful, redirecting to dashboard...');
         router.push('/dashboard');
       } else {
+        console.log('Login failed:', result.error);
         setError(result.error || 'Login failed');
       }
     } catch (err) {
+      console.error('Login exception:', err);
       setError('An unexpected error occurred');
     } finally {
       setIsLoading(false);
@@ -51,7 +56,7 @@ export default function LoginForm() {
           required
           value={formData.email}
           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-          className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
           placeholder="tu@email.com"
           disabled={isLoading}
         />
@@ -69,7 +74,7 @@ export default function LoginForm() {
           onChange={(e) =>
             setFormData({ ...formData, password: e.target.value })
           }
-          className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
           placeholder="••••••••"
           disabled={isLoading}
         />

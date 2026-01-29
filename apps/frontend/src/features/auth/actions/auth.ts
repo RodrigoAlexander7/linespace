@@ -59,42 +59,51 @@ export async function loginWithCredentials(
     const response = await axios.post(`${BACKEND_URL}/auth/login`, credentials);
     const { accessToken } = response.data;
 
+    console.log('Login successful, received token');
+
     // Validate token with backend
     try {
-      await axios.get(`${BACKEND_URL}/users/me`, {
+      console.log('Validating token with backend...');
+      const meResponse = await axios.get(`${BACKEND_URL}/users/me`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-    } catch (error) {
+      console.log('Token validation successful:', meResponse.data);
+    } catch (error: any) {
       console.error('Token validation failed:', error);
+      console.error('Error details:', error.response?.data || error.message);
       return {
         success: false,
-        error: 'Token validation failed',
+        error: `Token validation failed: ${error.response?.data?.message || error.message}`,
       };
     }
 
     // Set httpOnly cookie con sameSite='none' para cross-site
+    console.log('Setting cookie...');
     const cookiesStore = await cookies();
     cookiesStore.set({
       name: 'access_token',
       value: accessToken,
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'none',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // 'lax' en desarrollo, 'none' en producción
       maxAge: 60 * 60 * 24 * 7, // 1 week
       path: '/',
     });
+    console.log('Cookie set successfully');
 
+    console.log('Returning success response');
     return {
       success: true,
       message: 'Login successful',
     };
-  } catch (error) {
+  } catch (error: any) {
     console.error('Login error:', error);
+    console.error('Error response:', error.response?.data);
     return {
       success: false,
-      error: 'An unexpected error occurred',
+      error: error.response?.data?.message || 'Invalid credentials',
     };
   }
 }
@@ -118,7 +127,7 @@ export async function registerWithCredentials(
       value: accessToken,
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'none',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // 'lax' en desarrollo, 'none' en producción
       maxAge: 60 * 60 * 24 * 7, // 1 week
       path: '/',
     });

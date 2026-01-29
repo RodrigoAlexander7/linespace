@@ -71,7 +71,7 @@ export default function RegisterForm() {
           required
           value={formData.name}
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
           placeholder="Juan Pérez"
           disabled={isLoading}
         />
@@ -87,7 +87,7 @@ export default function RegisterForm() {
           required
           value={formData.email}
           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-          className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
           placeholder="tu@email.com"
           disabled={isLoading}
         />
@@ -105,7 +105,7 @@ export default function RegisterForm() {
           onChange={(e) =>
             setFormData({ ...formData, password: e.target.value })
           }
-          className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
           placeholder="Mínimo 8 caracteres"
           disabled={isLoading}
         />
@@ -126,7 +126,7 @@ export default function RegisterForm() {
           onChange={(e) =>
             setFormData({ ...formData, confirmPassword: e.target.value })
           }
-          className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
           placeholder="••••••••"
           disabled={isLoading}
         />
